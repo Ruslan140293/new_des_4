@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Exchange37 v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+:root{
+  --bg:#F2EDE4;
+  --bg2:#EAE3D8;
+  --ink:#0D0D0D;
+  --ink2:#2A2A2A;
+  --dim:#8A8070;
+  --y:#FFE500;
+  --y2:#F5D800;
+  --red:#FF3B30;
+  --grn:#00C853;
+  --border:2px solid var(--ink);
+  --shadow:4px 4px 0 var(--ink);
+  --shadow-lg:6px 6px 0 var(--ink);
+  --r:0px;
+  --mono:'Space Mono',monospace;
+  --disp:'Bebas Neue',sans-serif;
+  --sans:'Inter',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--ink);border:1px solid var(--bg)}
+
+/* ─── HEADER ─── */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;background:var(--bg);border-bottom:var(--border)}
+.hdr-logo{padding:0 24px;height:100%;display:flex;align-items:center;border-right:var(--border);text-decoration:none;font-family:var(--disp);font-size:26px;letter-spacing:1px;color:var(--ink);gap:0;flex-shrink:0}
+.hdr-logo .mark{background:var(--y);padding:2px 5px;margin-left:2px;font-size:26px}
+.hdr-nav{display:flex;height:100%;flex:1;overflow:hidden}
+.hdr-nav a{display:flex;align-items:center;padding:0 22px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--dim);text-decoration:none;border-right:var(--border);transition:all .15s;white-space:nowrap}
+.hdr-nav a:hover{background:var(--y);color:var(--ink)}
+.hdr-r{display:flex;align-items:center;height:100%;margin-left:auto}
+.hdr-r .langs{display:flex;height:100%;border-left:var(--border)}
+.lang{padding:0 14px;font-family:var(--mono);font-size:11px;font-weight:700;background:none;border:none;border-right:var(--border);color:var(--dim);cursor:pointer;transition:all .15s;height:100%}
+.lang.on,.lang:hover{background:var(--y);color:var(--ink)}
+.btn-login{height:100%;padding:0 22px;font-family:var(--mono);font-size:11px;font-weight:700;background:var(--ink);color:var(--bg);border:none;border-left:var(--border);cursor:pointer;letter-spacing:.5px;transition:all .15s}
+.btn-login:hover{background:var(--y);color:var(--ink)}
+.ham{display:none;height:100%;width:52px;align-items:center;justify-content:center;background:none;border:none;border-left:var(--border);cursor:pointer;flex-direction:column;gap:5px;padding:0}
+.ham span{width:20px;height:2px;background:var(--ink);display:block}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;padding-top:56px;display:grid;grid-template-columns:1fr 380px;border-bottom:var(--border)}
+.hero-left{padding:48px 56px;display:flex;flex-direction:column;justify-content:space-between;border-right:var(--border)}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;background:var(--y);border:var(--border);box-shadow:var(--shadow);padding:6px 14px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;align-self:flex-start}
+.hero-tag::before{content:'●';font-size:8px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.hero-h{font-family:var(--disp);font-size:clamp(72px,10vw,148px);line-height:.95;letter-spacing:-1px;margin-bottom:0}
+.hero-h .inv{background:var(--ink);color:var(--bg);padding:2px 10px;display:inline-block}
+.hero-h .yel{background:var(--y);padding:2px 10px;display:inline-block}
+.hero-meta{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:48px;border-top:var(--border)}
+.hero-meta-item{padding:20px 0 0;border-right:var(--border);padding-right:28px;margin-right:28px}
+.hero-meta-item:last-child{border-right:none;padding-right:0;margin-right:0}
+.hero-meta-n{font-family:var(--disp);font-size:44px;line-height:1}
+.hero-meta-l{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:4px;letter-spacing:.5px;text-transform:uppercase}
+.hero-right{display:flex;flex-direction:column}
+.hero-ticker{border-bottom:var(--border);padding:0}
+.tick-item2{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(13,13,13,.12);font-family:var(--mono);font-size:12px}
+.tick-sym2{font-weight:700}
+.tick-up{color:var(--grn)}
+.tick-dn{color:var(--red)}
+.hero-cta{padding:24px 20px;margin-top:auto;border-top:var(--border)}
+.hero-cta p{font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:14px;line-height:1.6;text-wrap:pretty}
+.btn-cta{display:block;width:100%;padding:14px;background:var(--ink);color:var(--bg);font-family:var(--disp);font-size:22px;letter-spacing:1px;border:var(--border);box-shadow:var(--shadow);cursor:pointer;text-align:center;transition:all .15s;text-decoration:none}
+.btn-cta:hover{background:var(--y);color:var(--ink);box-shadow:var(--shadow-lg);transform:translate(-2px,-2px)}
+
+/* ─── EXCHANGE SECTION ─── */
+.exchange{border-bottom:var(--border)}
+.ex-header{display:flex;align-items:stretch;border-bottom:var(--border)}
+.ex-hnum{font-family:var(--disp);font-size:80px;line-height:1;padding:16px 28px;border-right:var(--border);color:var(--y);background:var(--ink);-webkit-text-stroke:2px var(--y)}
+.ex-htitle{flex:1;padding:24px 36px;display:flex;flex-direction:column;justify-content:center}
+.ex-htitle h2{font-family:var(--disp);font-size:48px;line-height:1;letter-spacing:.5px}
+.ex-htitle p{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:6px}
+.ex-body{display:grid;grid-template-columns:1fr 1fr;border-bottom:var(--border)}
+.ex-col{padding:36px;border-right:var(--border)}
+.ex-col:last-child{border-right:none}
+.ex-col-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.ex-col-title::after{content:'';flex:1;height:1px;background:var(--ink);opacity:.15}
+.fg{margin-bottom:16px}
+.fl{display:block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.fi,.fs{width:100%;padding:10px 12px;background:var(--bg2);border:var(--border);color:var(--ink);font-size:14px;outline:none;font-family:var(--sans);transition:border-color .15s,box-shadow .15s;appearance:none;-webkit-appearance:none;border-radius:0}
+.fi:focus,.fs:focus{background:var(--bg);box-shadow:var(--shadow)}
+.fi:disabled{opacity:.7;cursor:not-allowed;font-family:var(--mono);font-size:13px}
+.fi.comm{background:var(--y);font-weight:700;font-family:var(--mono)}
+.fi.recv{background:var(--ink);color:var(--bg);font-weight:700;font-family:var(--mono)}
+.sw{position:relative}
+.sw::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:11px;font-weight:700}
+.curr-row{display:flex;gap:8px;align-items:flex-end}
+.curr-chip{height:40px;padding:0 14px;border:var(--border);background:var(--y);font-family:var(--mono);font-size:13px;font-weight:700;display:flex;align-items:center;flex-shrink:0;box-shadow:var(--shadow)}
+.cbx{display:flex;align-items:flex-start;gap:9px;margin-top:10px;cursor:pointer}
+.cbx input{width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--ink);cursor:pointer;border-radius:0}
+.cbx label{font-size:12px;font-family:var(--mono);color:var(--dim);cursor:pointer;line-height:1.5}
+.cbx label a{color:var(--ink);font-weight:700}
+.ex-swap{display:flex;align-items:center;justify-content:center;border:var(--border);border-left:none;border-right:none;padding:12px;background:var(--bg2)}
+.swap-btn{width:44px;height:44px;background:var(--ink);border:var(--border);color:var(--y);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all .15s;flex-shrink:0}
+.swap-btn:hover{background:var(--y);color:var(--ink);transform:rotate(180deg)}
+
+/* AML */
+.aml-section{padding:32px 36px;border-bottom:var(--border);display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:start}
+.aml-badge2{background:var(--ink);color:var(--y);font-family:var(--disp);font-size:52px;line-height:1;padding:8px 16px;border:var(--border);box-shadow:var(--shadow);flex-shrink:0;align-self:flex-start}
+.aml-body h3{font-family:var(--disp);font-size:26px;margin-bottom:6px;letter-spacing:.3px}
+.aml-body p{font-size:13px;font-family:var(--mono);color:var(--dim);line-height:1.65;max-width:560px;text-wrap:pretty}
+.aml-actions{display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.btn-bc2{padding:10px 20px;background:var(--bg2);border:var(--border);font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;box-shadow:var(--shadow);color:var(--ink);white-space:nowrap}
+.btn-bc2:hover{background:var(--y);transform:translate(-2px,-2px);box-shadow:var(--shadow-lg)}
+.ropt2{display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.5}
+.ropt2 input{margin-top:2px;accent-color:var(--ink);cursor:pointer;flex-shrink:0;width:14px;height:14px}
+.ropt2 span b{color:var(--ink)}
+.ex-submit{padding:24px 36px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.rate-info{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.rate-info strong{color:var(--ink);display:block;font-size:15px;margin-bottom:2px}
+.btn-exchange{padding:14px 48px;background:var(--ink);color:var(--bg);font-family:var(--disp);font-size:28px;letter-spacing:1px;border:var(--border);box-shadow:var(--shadow-lg);cursor:pointer;transition:all .15s}
+.btn-exchange:hover:not(:disabled){background:var(--y);color:var(--ink);transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink)}
+.btn-exchange:disabled{opacity:.35;cursor:not-allowed}
+
+/* ─── PARTNERS ─── */
+.partners{overflow:hidden;border-bottom:var(--border)}
+.p-header2{padding:14px 24px;border-bottom:var(--border);display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.p-header2::before{content:'';width:8px;height:8px;background:var(--grn);border:1px solid var(--ink)}
+.p-run{padding:16px 0;overflow:hidden;position:relative}
+.p-run::before,.p-run::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.p-run::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.p-run::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.p-track2{display:flex;gap:12px;animation:marquee2 24s linear infinite;white-space:nowrap}
+@keyframes marquee2{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.p-chip{padding:8px 20px;border:var(--border);background:var(--bg2);font-family:var(--mono);font-size:12px;font-weight:700;flex-shrink:0;transition:all .15s;cursor:default}
+.p-chip:hover{background:var(--y);box-shadow:var(--shadow)}
+
+/* ─── WHY US ─── */
+.why{border-bottom:var(--border)}
+.section-head{display:flex;align-items:stretch;border-bottom:var(--border)}
+.sh-num{font-family:var(--disp);font-size:72px;line-height:1;padding:16px 24px;border-right:var(--border);background:var(--y);color:var(--ink)}
+.sh-text{padding:20px 32px;display:flex;flex-direction:column;justify-content:center}
+.sh-text h2{font-family:var(--disp);font-size:44px;line-height:1;letter-spacing:.3px}
+.sh-text p{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:6px}
+.why-list{display:grid;grid-template-columns:1fr 1fr 1fr}
+.why-item{padding:28px 30px;border-right:var(--border);border-bottom:var(--border);position:relative;overflow:hidden;transition:background .15s}
+.why-item:hover{background:var(--y)}
+.why-item:nth-child(3n){border-right:none}
+.why-item:nth-child(n+4){border-bottom:none}
+.wi-n{font-family:var(--disp);font-size:56px;line-height:1;color:var(--bg2);position:absolute;right:14px;bottom:-6px;pointer-events:none;transition:color .15s}
+.why-item:hover .wi-n{color:rgba(13,13,13,.08)}
+.wi-ic{font-size:22px;margin-bottom:10px;display:block}
+.wi-t{font-family:var(--disp);font-size:22px;letter-spacing:.3px;margin-bottom:6px}
+.wi-d{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.65;text-wrap:pretty;max-width:260px}
+
+/* ─── STATS ─── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:var(--border)}
+.stat-blk{padding:40px 32px;border-right:var(--border);position:relative;overflow:hidden;transition:background .15s}
+.stat-blk:last-child{border-right:none}
+.stat-blk:hover{background:var(--y)}
+.stat-n2{font-family:var(--disp);font-size:clamp(40px,5vw,72px);line-height:1;letter-spacing:-1px}
+.stat-l2{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.stat-bg{position:absolute;right:-10px;bottom:-20px;font-family:var(--disp);font-size:100px;line-height:1;color:rgba(13,13,13,.05);pointer-events:none}
+
+/* ─── RESERVES ─── */
+.reserves{border-bottom:var(--border)}
+.res-body{padding:0}
+.res-row2{display:grid;grid-template-columns:56px 120px 1fr 1fr 180px;align-items:center;border-bottom:1px solid rgba(13,13,13,.1);padding:0 32px;height:60px;transition:background .15s}
+.res-row2:hover{background:var(--y)}
+.res-row2:last-child{border-bottom:none}
+.res-idx{font-family:var(--mono);font-size:10px;color:var(--dim)}
+.res-info{display:flex;align-items:center;gap:10px}
+.res-dot{width:10px;height:10px;border:var(--border);flex-shrink:0}
+.res-code2{font-family:var(--mono);font-size:13px;font-weight:700}
+.res-amt2{font-family:var(--mono);font-size:14px;font-weight:700}
+.res-usd2{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.res-bar2{height:8px;border:1px solid var(--ink);overflow:hidden;background:var(--bg2)}
+.res-fill{height:100%;background:var(--ink);transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.res-row2:hover .res-fill{background:var(--ink)}
+.live2{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1px;color:var(--grn);display:inline-flex;align-items:center;gap:4px;margin-top:2px}
+.live2::before{content:'';width:5px;height:5px;background:var(--grn);border:1px solid var(--ink);animation:blink 1.4s ease-in-out infinite}
+
+/* ─── FOOTER ─── */
+footer{display:grid;grid-template-columns:1fr 1fr;border-top:var(--border)}
+.ft-left{background:var(--ink);color:var(--bg);padding:48px 48px 36px;border-right:var(--border)}
+.ft-brand2{font-family:var(--disp);font-size:44px;letter-spacing:.5px;margin-bottom:16px}
+.ft-brand2 .mark2{background:var(--y);color:var(--ink);padding:0 6px}
+.ft-tagline{font-family:var(--mono);font-size:12px;color:rgba(242,237,228,.45);line-height:1.7;max-width:280px;margin-bottom:28px;text-wrap:pretty}
+.ft-contact a{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--y);text-decoration:none;border:1px solid rgba(255,229,0,.3);padding:8px 16px;margin-right:8px;margin-bottom:8px;transition:all .15s}
+.ft-contact a:hover{background:var(--y);color:var(--ink)}
+.ft-copy{font-family:var(--mono);font-size:10px;color:rgba(242,237,228,.25);margin-top:32px;letter-spacing:.5px}
+.ft-right{padding:48px 48px 36px;background:var(--bg2)}
+.ft-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px}
+.ft-col h4{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(13,13,13,.15)}
+.ft-col ul{list-style:none}
+.ft-col li{margin-bottom:8px}
+.ft-col a{font-family:var(--mono);font-size:11px;color:var(--ink2);text-decoration:none;transition:all .15s;display:flex;align-items:center;gap:6px}
+.ft-col a:hover{color:var(--ink);font-weight:700}
+.ft-col a::before{content:'→';opacity:0;transition:opacity .15s;font-size:10px}
+.ft-col a:hover::before{opacity:1}
+
+/* ─── SCROLL ANIM ─── */
+.fu{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+.fu.vis{opacity:1;transform:none}
+.fu-l{opacity:0;transform:translateX(-30px);transition:opacity .5s ease,transform .5s ease}
+.fu-l.vis{opacity:1;transform:none}
+.fu-r{opacity:0;transform:translateX(30px);transition:opacity .5s ease,transform .5s ease}
+.fu-r.vis{opacity:1;transform:none}
+
+/* ─── TWEAKS ─── */
+#tp{position:fixed;bottom:22px;right:22px;z-index:999;background:var(--ink);border:var(--border);box-shadow:var(--shadow-lg);padding:20px;min-width:220px;display:none}
+#tp.open{display:block}
+#tp h3{font-family:var(--disp);font-size:18px;color:var(--y);margin-bottom:14px;letter-spacing:.5px}
+.tr{margin-bottom:12px}
+.tr label{font-size:10px;color:rgba(242,237,228,.5);display:block;margin-bottom:5px;font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase}
+.tr select,.tr input[type=range]{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--bg);padding:5px 8px;font-size:12px;outline:none;font-family:var(--mono)}
+.tr input[type=color]{width:100%;height:30px;cursor:pointer;background:none;border:1px solid rgba(255,255,255,.2)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:920px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .ex-body{grid-template-columns:1fr}
+  .ex-col:first-child{border-right:none;border-bottom:var(--border)}
+  .aml-section{grid-template-columns:1fr;gap:16px}
+  .aml-badge2{display:none}
+  .why-list{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat-blk:nth-child(2){border-right:none}
+  .stat-blk:nth-child(3){border-top:var(--border)}
+  .res-row2{grid-template-columns:40px 100px 1fr 120px}
+  .res-usd2{display:none}
+  footer{grid-template-columns:1fr}
+  .ft-left{border-right:none;border-bottom:var(--border)}
+  .hdr-nav{display:none}
+  .ham{display:flex}
+  .hdr-logo{font-size:22px}
+}
+@media(max-width:600px){
+  .why-list{grid-template-columns:1fr}
+  .why-item{border-right:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .ft-cols{grid-template-columns:1fr 1fr}
+  .hero-h{font-size:clamp(52px,14vw,100px)}
+  .ex-htitle h2{font-size:32px}
+  .res-row2{grid-template-columns:32px 80px 1fr}
+  .res-bar2,.res-amt2{display:none}
+  .hdr-r .langs{display:none}
+  .ex-submit{flex-direction:column;align-items:stretch}
+  .btn-exchange{text-align:center}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+
+/* ── DATA ── */
+const CUR=[
+  {code:'BTC',name:'Bitcoin',  sym:'₿',color:'#F7931A'},
+  {code:'ETH',name:'Ethereum', sym:'Ξ',color:'#627EEA'},
+  {code:'USDT',name:'Tether',  sym:'₮',color:'#26A17B'},
+  {code:'USD',name:'US Dollar',sym:'$',color:'#0D0D0D'},
+  {code:'EUR',name:'Euro',     sym:'€',color:'#0D0D0D'},
+  {code:'GBP',name:'Pound',    sym:'£',color:'#0D0D0D'},
+];
+const COUNTRIES={UA:{name:'Украина',cities:['Киев','Харьков','Одесса','Днепр','Запорожье','Львов']},PL:{name:'Польша',cities:['Варшава','Краков','Вроцлав','Гданьск']},DE:{name:'Германия',cities:['Берлин','Мюнхен','Гамбург','Франкфурт']},CZ:{name:'Чехия',cities:['Прага','Брно']},AT:{name:'Австрия',cities:['Вена','Грац']},KZ:{name:'Казахстан',cities:['Алматы','Астана']}};
+const RATES={BTC:66200,ETH:3180,USDT:1,USD:1,EUR:1.085,GBP:1.27};
+const PARTNERS=['Binance','OKX','Bybit','Kraken','Visa','Mastercard','SWIFT','SEPA','Tron','Polygon','MonoBank','PrivatBank'];
+const WHY=[
+  {ic:'⚡',t:'15–30 мин',d:'Среднее время обмена. Без выходных.'},
+  {ic:'🛡',t:'AML-защита',d:'Каждая транзакция проверяется.'},
+  {ic:'📊',t:'Живой курс',d:'Обновляется каждые 5 минут.'},
+  {ic:'🔒',t:'Безопасность',d:'Данные не передаются третьим лицам.'},
+  {ic:'🌍',t:'UA + EU',d:'6 стран, 20+ городов, нал и безнал.'},
+  {ic:'💬',t:'24/7 чат',d:'Оператор в Telegram за 5 минут.'},
+];
+const STATS=[
+  {val:5,suf:'+',lbl:'Лет на рынке',lb:'V'},
+  {val:15000,suf:'+',lbl:'Клиентов',lb:'XV',fmt:v=>Math.round(v).toLocaleString('ru-RU')},
+  {val:50,pre:'$',suf:'M+',lbl:'Объём обменов',lb:'L'},
+  {val:99.8,suf:'%',lbl:'Довольных клиентов',lb:'C',fmt:v=>v.toFixed(1)},
+];
+const RES=[
+  {code:'BTC',color:'#F7931A',amt:2.4731,usd:163699,pct:22},
+  {code:'ETH',color:'#627EEA',amt:48.21,usd:153308,pct:21},
+  {code:'USDT',color:'#26A17B',amt:248500,usd:248500,pct:33},
+  {code:'USD',color:'#0D0D0D',amt:183200,usd:183200,pct:25},
+  {code:'EUR',color:'#555',amt:94700,usd:102749,pct:14},
+  {code:'GBP',color:'#888',amt:41300,usd:52451,pct:7},
+];
+const TICKS=[
+  {sym:'BTC/USD',val:'66,482',chg:'+1.24%',up:true},
+  {sym:'ETH/USD',val:'3,184',chg:'+0.87%',up:true},
+  {sym:'USDT/USD',val:'1.000',chg:'0.00%',up:true},
+  {sym:'EUR/USD',val:'1.085',chg:'-0.12%',up:false},
+  {sym:'GBP/USD',val:'1.273',chg:'+0.31%',up:true},
+  {sym:'BTC/EUR',val:'61,277',chg:'+1.36%',up:true},
+];
+const fmtA=(n,c)=>n>=1000?n.toLocaleString('ru-RU',{maximumFractionDigits:c==='BTC'||c==='ETH'?6:2}):n.toFixed(c==='BTC'||c==='ETH'?6:2);
+
+function useFade(ref,cls='fu'){useEffect(()=>{const el=ref.current;if(!el)return;const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('vis');obs.disconnect();}},{threshold:.08});obs.observe(el);return()=>obs.disconnect();},[]);}
+function useCounter(target,active,fmt){const[v,setV]=useState(0);useEffect(()=>{if(!active)return;let s=null;const dur=1600;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/dur,1);setV((1-Math.pow(1-p,3))*target);if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);},[active,target]);return fmt?fmt(v):(v>=100?Math.round(v):v.toFixed(1));}
+
+/* ── HEADER ── */
+function Header({lang,setLang}){
+  return(
+    <header className="hdr">
+      <a href="#" className="hdr-logo">EX<span className="mark">37</span></a>
+      <nav className="hdr-nav">
+        {[['#exchange','Обмен'],['#partners','Партнёры'],['#why','Почему мы'],['#reserves','Резервы']].map(([h,l])=><a key={h} href={h}>{l}</a>)}
+      </nav>
+      <div className="hdr-r">
+        <div className="langs">
+          {['RU','EN','UA'].map(l=><button key={l} className={`lang${lang===l?' on':''}`} onClick={()=>setLang(l)}>{l}</button>)}
+        </div>
+        <button className="btn-login">ВОЙТИ →</button>
+        <button className="ham"><span/><span/><span/></button>
+      </div>
+    </header>
+  );
+}
+
+/* ── SF ── */
+function SF({label,value,onChange,opts}){return(
+  <div className="fg"><label className="fl">{label}</label>
+    <div className="sw"><select className="fs" value={value} onChange={e=>onChange(e.target.value)}>
+      {opts.map(o=>{const v=o.value||o,l=o.label||o;return<option key={v} value={v}>{l}</option>;})}</select></div>
+  </div>
+);}
+
+/* ── EXCHANGE FORM ── */
+function ExchangeForm({commPct}){
+  const[gC,setGC]=useState('BTC');const[rC,setRC]=useState('USD');
+  const[gCo,setGCo]=useState('UA');const[rCo,setRCo]=useState('DE');
+  const[gCi,setGCi]=useState('Киев');const[rCi,setRCi]=useState('Берлин');
+  const[gA,setGA]=useState('1');
+  const[email,setEmail]=useState('');const[msng,setMsng]=useState('telegram');const[ct,setCt]=useState('');
+  const[ag1,setAg1]=useState(false);const[ag2,setAg2]=useState(false);
+  const[aml,setAml]=useState('');const[done,setDone]=useState(false);
+  const pct=commPct||1.5;
+  const usd=parseFloat(gA||0)*RATES[gC];
+  const recv=gA&&!isNaN(parseFloat(gA))?fmtA((usd-usd*pct/100)/RATES[rC],rC):'';
+  const comm=gA&&!isNaN(parseFloat(gA))?fmtA(parseFloat(gA)*pct/100,gC)+' '+gC:'';
+  const coOpts=Object.entries(COUNTRIES).map(([k,v])=>({value:k,label:v.name}));
+  const canSub=ag1&&ag2&&aml&&gA&&email&&ct;
+  const gObj=CUR.find(c=>c.code===gC);const rObj=CUR.find(c=>c.code===rC);
+  const swap=()=>{const[a,b,c,d,e,f]=[gC,rC,gCo,rCo,gCi,rCi];setGC(b);setRC(a);setGCo(d);setRCo(c);setGCi(f);setRCi(e);};
+
+  if(done)return(
+    <div style={{padding:'56px 36px',textAlign:'center',borderBottom:'2px solid #0D0D0D'}}>
+      <div style={{fontFamily:'var(--disp)',fontSize:72,lineHeight:1,marginBottom:16}}>ГОТОВО</div>
+      <div style={{background:'var(--y)',border:'2px solid var(--ink)',boxShadow:'var(--shadow)',display:'inline-block',padding:'16px 32px',fontFamily:'var(--mono)',fontSize:14,marginBottom:24}}>{gA} {gC} → {recv} {rC}</div>
+      <div><button className="btn-exchange" onClick={()=>setDone(false)}>НОВЫЙ ОБМЕН</button></div>
+    </div>
+  );
+
+  return(
+    <>
+      <div className="ex-body" id="exchange-form">
+        <div className="ex-col">
+          <div className="ex-col-title">Отдаю</div>
+          <div className="fg"><label className="fl">Валюта</label>
+            <div className="curr-row">
+              <div className="sw" style={{flex:1}}><select className="fs" value={gC} onChange={e=>setGC(e.target.value)}>
+                {CUR.map(c=><option key={c.code} value={c.code}>{c.sym} {c.code} — {c.name}</option>)}</select></div>
+              <div className="curr-chip" style={{background:'var(--y)',borderColor:'var(--ink)'}}>{gObj.sym}</div>
+            </div>
+          </div>
+          <SF label="Страна" value={gCo} onChange={v=>{setGCo(v);setGCi(COUNTRIES[v].cities[0])}} opts={coOpts}/>
+          <SF label="Город" value={gCi} onChange={setGCi} opts={COUNTRIES[gCo].cities}/>
+          <div className="fg"><label className="fl">Сумма</label><input className="fi" type="number" value={gA} onChange={e=>setGA(e.target.value)} placeholder="0.00" min="0" step="any"/></div>
+          <div className="fg"><label className="fl">Комиссия ({pct}%)</label><input className="fi comm" value={comm||'—'} readOnly disabled/></div>
+          <div className="cbx"><input type="checkbox" id="a1" checked={ag1} onChange={e=>setAg1(e.target.checked)}/><label htmlFor="a1">Согласен с <a href="#">политикой</a></label></div>
+          <div className="cbx"><input type="checkbox" id="a2" checked={ag2} onChange={e=>setAg2(e.target.checked)}/><label htmlFor="a2">Согласен с <a href="#">правилами</a></label></div>
+        </div>
+        <div className="ex-col">
+          <div className="ex-col-title">Получаю</div>
+          <div className="fg"><label className="fl">Валюта</label>
+            <div className="curr-row">
+              <div className="sw" style={{flex:1}}><select className="fs" value={rC} onChange={e=>setRC(e.target.value)}>
+                {CUR.map(c=><option key={c.code} value={c.code}>{c.sym} {c.code} — {c.name}</option>)}</select></div>
+              <div className="curr-chip" style={{background:'var(--ink)',color:'var(--bg)'}}>{rObj.sym}</div>
+            </div>
+          </div>
+          <SF label="Страна" value={rCo} onChange={v=>{setRCo(v);setRCi(COUNTRIES[v].cities[0])}} opts={coOpts}/>
+          <SF label="Город" value={rCi} onChange={setRCi} opts={COUNTRIES[rCo].cities}/>
+          <div className="fg"><label className="fl">К получению</label><input className="fi recv" value={recv||'—'} readOnly/></div>
+          <div className="fg"><label className="fl">Email</label><input className="fi" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@email.com"/></div>
+          <div className="fg"><label className="fl">Канал</label>
+            <div className="sw"><select className="fs" value={msng} onChange={e=>setMsng(e.target.value)}>
+              <option value="telegram">Telegram</option><option value="whatsapp">WhatsApp</option></select></div>
+          </div>
+          <div className="fg"><label className="fl">{msng==='telegram'?'Telegram @username':'Номер WhatsApp'}</label>
+            <input className="fi" type="text" value={ct} onChange={e=>setCt(e.target.value)} placeholder={msng==='telegram'?'@username':'+380...'}/>
+          </div>
+        </div>
+      </div>
+      <div className="ex-swap">
+        <button className="swap-btn" onClick={swap}>⇄</button>
+        <span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--dim)',marginLeft:14}}>Поменять направление</span>
+      </div>
+      <div className="aml-section">
+        <div className="aml-badge2">AML</div>
+        <div className="aml-body">
+          <h3>Проверка происхождения средств</h3>
+          <p>Рекомендуем проверить чистоту криптовалюты перед обменом через независимый сервис. Это защитит вас от блокировки и юридических рисков.</p>
+          <div style={{marginTop:14,display:'flex',flexWrap:'wrap',gap:12}}>
+            <label className="ropt2"><input type="radio" name="aml" value="yes" checked={aml==='yes'} onChange={()=>setAml('yes')}/><span><b>Проверил</b> — с результатом ознакомлен</span></label>
+            <label className="ropt2"><input type="radio" name="aml" value="no" checked={aml==='no'} onChange={()=>setAml('no')}/><span><b>Не проверял</b> — принимаю риски</span></label>
+          </div>
+        </div>
+        <div className="aml-actions">
+          <a href="https://www.bestchange.ru" target="_blank" rel="noopener" className="btn-bc2">BESTCHANGE →</a>
+        </div>
+      </div>
+      <div className="ex-submit">
+        <div className="rate-info">
+          <strong>{gA||'0'} {gC} = {recv||'?'} {rC}</strong>
+          Комиссия {pct}% · Курс обновлён сейчас
+        </div>
+        <button className="btn-exchange" disabled={!canSub} onClick={()=>canSub&&setDone(true)}>
+          ОБМЕНЯТЬ →
+        </button>
+      </div>
+    </>
+  );
+}
+
+/* ── PARTNERS ── */
+function Partners(){
+  const doubled=[...PARTNERS,...PARTNERS,...PARTNERS,...PARTNERS];
+  return(
+    <section id="partners">
+      <div className="partners">
+        <div className="p-header2"><span/>Партнёры и платёжные системы</div>
+        <div className="p-run">
+          <div className="p-track2">{doubled.map((p,i)=><div key={i} className="p-chip">{p}</div>)}</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── WHY ── */
+function WhyUs(){
+  const ref=useRef();useFade(ref);
+  return(
+    <section id="why">
+      <div className="why">
+        <div className="section-head">
+          <div className="sh-num">02</div>
+          <div className="sh-text">
+            <h2>ПОЧЕМУ МЫ</h2>
+            <p>Работаем с 2019. Украина, Польша, Германия и другие страны.</p>
+          </div>
+        </div>
+        <div className="why-list fu" ref={ref}>
+          {WHY.map((w,i)=>(
+            <div key={i} className="why-item" style={{transitionDelay:i*.07+'s'}}>
+              <span className="wi-ic">{w.ic}</span>
+              <div className="wi-t">{w.t}</div>
+              <div className="wi-d">{w.d}</div>
+              <div className="wi-n">{String(i+1).padStart(2,'0')}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── STATS ── */
+function StatBlk({val,suf,pre,lbl,lb,fmt}){
+  const ref=useRef();
+  const[on,setOn]=useState(false);
+  const d=useCounter(val,on,fmt);
+  useEffect(()=>{const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){setOn(true);obs.disconnect();}},{threshold:.5});obs.observe(ref.current);return()=>obs.disconnect();},[]);
+  return(
+    <div className="stat-blk" ref={ref}>
+      <div className="stat-n2">{pre||''}{d}{suf||''}</div>
+      <div className="stat-l2">{lbl}</div>
+      <div className="stat-bg">{lb}</div>
+    </div>
+  );
+}
+
+/* ── RESERVES ── */
+function Reserves(){
+  const ref=useRef();useFade(ref);
+  const[loaded,setLoaded]=useState(false);
+  useEffect(()=>{const t=setTimeout(()=>setLoaded(true),500);return()=>clearTimeout(t);},[]);
+  return(
+    <section id="reserves">
+      <div className="reserves">
+        <div className="section-head">
+          <div className="sh-num" style={{background:'var(--ink)',color:'var(--y)'}}>03</div>
+          <div className="sh-text">
+            <h2>РЕЗЕРВЫ</h2>
+            <p>Актуальные балансы кошельков. Обновляется каждые 15 минут.</p>
+          </div>
+        </div>
+        <div className="res-body fu" ref={ref}>
+          {RES.map((r,i)=>(
+            <div key={i} className="res-row2">
+              <div className="res-idx">{String(i+1).padStart(2,'0')}</div>
+              <div className="res-info"><div className="res-dot" style={{background:r.color}}/><div className="res-code2">{r.code}</div></div>
+              <div className="res-amt2">{fmtA(r.amt,r.code)}</div>
+              <div className="res-usd2">${r.usd.toLocaleString('ru-RU')}</div>
+              <div>
+                <div className="res-bar2"><div className="res-fill" style={{width:loaded?r.pct+'%':'0%'}}/></div>
+                <div className="live2">LIVE</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── TWEAKS ── */
+const TWEAK_DEFAULTS3=/*EDITMODE-BEGIN*/{"accentColor":"#FFE500","commissionPct":1.5,"language":"RU"}/*EDITMODE-END*/;
+function Tweaks({onCommChange}){
+  const[open,setOpen]=useState(false);
+  const[vals,setVals]=useState(TWEAK_DEFAULTS3);
+  useEffect(()=>{
+    const fn=e=>{if(e.data?.type==='__activate_edit_mode')setOpen(true);if(e.data?.type==='__deactivate_edit_mode')setOpen(false);};
+    window.addEventListener('message',fn);
+    window.parent.postMessage({type:'__edit_mode_available'},'*');
+    return()=>window.removeEventListener('message',fn);
+  },[]);
+  const set=(k,v)=>{const n={...vals,[k]:v};setVals(n);if(k==='accentColor')document.documentElement.style.setProperty('--y',v);if(k==='commissionPct')onCommChange(parseFloat(v));window.parent.postMessage({type:'__edit_mode_set_keys',edits:n},'*');};
+  if(!open)return null;
+  return(
+    <div id="tp" className="open">
+      <h3>TWEAKS</h3>
+      <div className="tr"><label>Акцент</label><input type="color" value={vals.accentColor} onChange={e=>set('accentColor',e.target.value)}/></div>
+      <div className="tr"><label>Комиссия {vals.commissionPct}%</label><input type="range" min=".5" max="5" step=".1" value={vals.commissionPct} onChange={e=>set('commissionPct',e.target.value)}/></div>
+      <div className="tr"><label>Язык</label><select value={vals.language} onChange={e=>set('language',e.target.value)}>{['RU','EN','UA'].map(l=><option key={l}>{l}</option>)}</select></div>
+    </div>
+  );
+}
+
+/* ── APP ── */
+function App(){
+  const[lang,setLang]=useState('RU');
+  const[commPct,setCommPct]=useState(1.5);
+  const statsRef=useRef();useFade(statsRef);
+  return(
+    <>
+      <Header lang={lang} setLang={setLang}/>
+
+      {/* HERO */}
+      <section id="exchange" style={{paddingTop:56}}>
+        <div className="hero">
+          <div className="hero-left">
+            <div>
+              <div className="hero-tag">● CRYPTO EXCHANGE — UA/EU — 2019</div>
+              <h1 className="hero-h">
+                <span className="inv">БЫСТРЫЙ</span><br/>
+                КРИПТО<br/>
+                <span className="yel">ОБМЕН</span>
+              </h1>
+            </div>
+            <div className="hero-meta">
+              <div className="hero-meta-item"><div className="hero-meta-n">15 МИН</div><div className="hero-meta-l">Среднее время обмена</div></div>
+              <div className="hero-meta-item"><div className="hero-meta-n">6 СТРАН</div><div className="hero-meta-l">Украина и Европа</div></div>
+            </div>
+          </div>
+          <div className="hero-right">
+            <div className="hero-ticker">
+              {TICKS.map((t,i)=>(
+                <div key={i} className="tick-item2">
+                  <span className="tick-sym2">{t.sym}</span>
+                  <span>{t.val}</span>
+                  <span className={t.up?'tick-up':'tick-dn'}>{t.chg}</span>
+                </div>
+              ))}
+            </div>
+            <div className="hero-cta">
+              <p>Наличный и безналичный обмен BTC, ETH, USDT, USD, EUR, GBP. Поддержка 24/7.</p>
+              <a href="#exchange-form" className="btn-cta">НАЧАТЬ ОБМЕН →</a>
+            </div>
+          </div>
+        </div>
+
+        {/* FORM HEADER */}
+        <div className="ex-header">
+          <div className="ex-hnum">01</div>
+          <div className="ex-htitle">
+            <h2>ФОРМА ОБМЕНА</h2>
+            <p>Заполните все поля — обработаем в течение 15–30 минут</p>
+          </div>
+        </div>
+        <ExchangeForm commPct={commPct}/>
+      </section>
+
+      <Partners/>
+
+      <WhyUs/>
+
+      {/* ACHIEVEMENTS */}
+      <section id="achievements">
+        <div className="section-head">
+          <div className="sh-num" style={{background:'var(--y)',color:'var(--ink)'}}>04</div>
+          <div className="sh-text"><h2>ДОСТИЖЕНИЯ</h2><p>Цифры говорят сами за себя</p></div>
+        </div>
+        <div className="stats fu" ref={statsRef}>
+          {STATS.map((s,i)=><StatBlk key={i} {...s}/>)}
+        </div>
+      </section>
+
+      <Reserves/>
+
+      {/* FOOTER */}
+      <footer id="footer">
+        <div className="ft-left">
+          <div className="ft-brand2">EX<span className="mark2">37</span></div>
+          <p className="ft-tagline">Надёжный криптообменник для Украины и Европы. Работаем с 2019 года без единого скама.</p>
+          <div className="ft-contact">
+            {['Telegram','WhatsApp','Instagram'].map(s=><a key={s} href="#">{s} →</a>)}
+          </div>
+          <div className="ft-copy">© 2019–2026 EXCHANGE37. ALL RIGHTS RESERVED.</div>
+        </div>
+        <div className="ft-right">
+          <div className="ft-cols">
+            <div className="ft-col"><h4>Обмен</h4><ul>{['BTC → USD','ETH → EUR','USDT → GBP','USD → BTC','Все пары'].map(l=><li key={l}><a href="#">{l}</a></li>)}</ul></div>
+            <div className="ft-col"><h4>Города</h4><ul>{['Киев','Одесса','Варшава','Берлин','Прага','Вена'].map(l=><li key={l}><a href="#">{l}</a></li>)}</ul></div>
+            <div className="ft-col"><h4>Компания</h4><ul>{['О нас','AML политика','Конфиденциальность','Правила','Контакты','FAQ'].map(l=><li key={l}><a href="#">{l}</a></li>)}</ul></div>
+          </div>
+        </div>
+      </footer>
+
+      <Tweaks onCommChange={setCommPct}/>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
